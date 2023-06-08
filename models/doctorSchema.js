@@ -11,14 +11,13 @@ const doctorSchema = new Schema({
     education: String,
     reviews: String,
     doctorsConnection: String,
-    patients: {
+    patients: [{
         type: Schema.Types.ObjectId,
         ref: 'Patient'
-    },
-    Availability: Date,
-    LanguagesSpoken: String
+      }]      
 });
 
 const Doctor = mongoose.model('Doctor', doctorSchema);
 
-module.exports = Doctor;
+// module.exports = Doctor;
+export default Doctor;
