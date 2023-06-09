@@ -2,13 +2,36 @@ import express from 'express'
 import 'dotenv/config' 
 import mongoose from 'mongoose'
 import doctorRoutes from './routes/doctorRoutes.js'
+import patientRoutes from './routes/patientRoutes.js'
+import passport from 'passport';
+import { Strategy as BearerStrategy } from 'passport-http-bearer';
+import Token from './models/tokenSchema.js';
 
 const app = express()
-const port = 5000
+
 
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+//Passport middleware
+app.use(passport.initialize());
+
+
+// Define the Bearer strategy
+// Define the Bearer strategy
+passport.use(new BearerStrategy((tokenValue, done) => {
+  Token.findOne({ value: tokenValue }, (err, foundToken) => {
+    if (err) {
+      return done(err);
+    }
+    if (foundToken) {
+      return done(null, true);
+    } else {
+      return done(null, false);
+    }
+  });
+}));
 
 
 
@@ -20,14 +43,6 @@ mongoose.connect(process.env.DATABASE,
   }
 );
 
-mongoose.connection
-  .on('open', () => {
-      console.log('Mongoose connection open');
-  })
-  .on('error', (err) => {
-      console.log(`Connection error: ${err.message}`);
-  });
-
 
 //Routes
 //Home route
@@ -38,7 +53,8 @@ app.get('/',(req, res)  => {
 //Doctor route
 app.use('/doctor', doctorRoutes);
 
+//Patient route
+app.use("/patient", patientRoutes);
 
-app.listen(port, () => {
-  console.log(`Server listening on port ${port}`)
-})
+
+export default app;
