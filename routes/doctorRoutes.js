@@ -30,6 +30,7 @@ import Patient from "../models/patientSchema.js";
 import DoctorPatient from "../models/doctorPatientSchema.js";
 import DoctorPatientReview from "../models/doctorPatientReviewSchema.js";
 import Token from '../models/tokenSchema.js';
+import auth from "../middleware/auth.js";
 
 
 const router = express.Router();
